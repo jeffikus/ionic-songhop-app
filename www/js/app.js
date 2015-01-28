@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('songhop', ['ionic', 'songhop.controllers'])
 
-.run(function($ionicPlatform, $rootScope, $state, User) {
+.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -30,35 +30,12 @@ angular.module('songhop', ['ionic', 'songhop.controllers'])
   $stateProvider
 
 
-  // splash page
-  .state('splash', {
-    url: '/',
-    templateUrl: 'templates/splash.html',
-    controller: 'SplashCtrl',
-    onEnter: function($state, User){
-      User.checkSession().then(function(hasSession) {
-        if (hasSession) $state.go('tab.discover');
-      });
-    }
-  })
-
   // setup an abstract state for the tabs directive
   .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html',
-    controller: 'TabsCtrl',
-    // don't load the state until we've populated our User, if necessary.
-    resolve: {
-      populateSession: function(User) {
-        return User.checkSession();
-      }
-    },
-    onEnter: function($state, User){
-      User.checkSession().then(function(hasSession) {
-        if (!hasSession) $state.go('splash');
-      });
-    }
+    controller: 'TabsCtrl'
   })
 
   // Each tab has its own nav history stack:
@@ -83,7 +60,7 @@ angular.module('songhop', ['ionic', 'songhop.controllers'])
       }
     })
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/tab/discover');
 
 })
 
