@@ -12,7 +12,6 @@ angular.module('songhop.services', [])
 
     // add to favorites array
     o.favorites.unshift(song);
-    o.newFavorites++;
   }
 
   o.removeSongFromFavorites = function(song, index) {
