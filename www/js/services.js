@@ -6,6 +6,21 @@ angular.module('songhop.services', [])
     queue: []
   };
 
+  // placeholder for the media player
+  var media;
+
+  o.init = function() {
+    if (o.queue.length === 0) {
+      // if there's nothing in the queue, fill it.
+      // this also means that this is the first call of init.
+      return o.getNextSongs();
+
+    } else {
+      // otherwise, play the current song
+      return o.playCurrentSong();
+    }
+  }
+
   o.getNextSongs = function() {
     return $http({
       method: 'GET',
@@ -16,15 +31,39 @@ angular.module('songhop.services', [])
     });
   }
 
+  o.playCurrentSong = function() {
+    var defer = $q.defer();
+
+    // play the current song's preview
+    media = new Audio(o.queue[0].preview_url);
+
+    // when song loaded, resolve the promise to let controller know.
+    media.addEventListener("loadeddata", function() {
+      defer.resolve();
+    });
+
+    media.play();
+
+    return defer.promise;
+  }
+
+  // used when switching to favorites tab
+  o.haltAudio = function() {
+    if (media) media.pause();
+  }
 
   o.nextSong = function() {
     // pop the index 0 off
     o.queue.shift();
-  }
 
-  // low on the queue? lets fill it up
-  if (o.queue.length <= 3) {
-    o.getNextSongs();
+    // end the song
+    o.haltAudio();
+
+    // low on the queue? lets fill it up
+    if (o.queue.length <= 3) {
+      o.getNextSongs();
+    }
+
   }
 
   return o;
@@ -34,7 +73,8 @@ angular.module('songhop.services', [])
 .factory('User', function() {
   
   var o = {
-    favorites: []
+    favorites: [],
+    newFavorites: 0
   }
 
   o.addSongToFavorites = function(song) {
@@ -43,6 +83,7 @@ angular.module('songhop.services', [])
 
     // add to favorites array
     o.favorites.unshift(song);
+    o.newFavorites++;
   }
 
   o.removeSongFromFavorites = function(song, index) {
@@ -51,6 +92,10 @@ angular.module('songhop.services', [])
 
     // add to favorites array
     o.favorites.splice(index, 1);
+  }
+
+  o.favoriteCount = function() {
+    return o.newFavorites;
   }
 
   return o;
