@@ -1,6 +1,6 @@
 /* Splash page stylings */
 .splash-page {
-  background:url(/img/splash-bkg.jpg);
+  background:url(../img/splash-bkg.jpg);
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -46,7 +46,17 @@
   transition:all cubic-bezier(0.420, 0.000, 1.000, 1.000) 0.1s;
 }
 
+.discover-page .current-song .item-image {
+  max-height:300px;
+  overflow:hidden;
+}
 
+@media screen and (max-height: 600px) {
+  .discover-page .current-song .item-image {
+    max-height:200px;
+    overflow:hidden;
+  }
+}
 
 .discover-page .current-song.favorited.ng-hide {
   -webkit-transform: translateX(1000px) rotate(50deg);
